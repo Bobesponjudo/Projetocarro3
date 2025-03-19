@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Polimorfia</title>
+</head>
+<link rel="stylesheet" href="css/estilo.css">
+
+<body>
+    <h1>Polimorfia</h1>
+
+        <h2>Carro Esportivo</h2>
+        <img src="imagens/png-clipart-black-car-dodge-challenger-grey-transport-cars-removebg-preview.png" alt="">
+        <label for="modeloEsportivo">Modelo:</label>
+        <input type="text" id="modeloEsportivo" value="Dodge"><br><br>
+        <label for="corEsportivo">Cor:</label>
+        <input type="text" id="corEsportivo" value="Preto"><br><br>
+        <div id="resultadoEsportivo"></div>
+
+        <h2>Caminhão</h2>
+        <img src="imagens/png-transparent-white-scania-utility-truck-scania-ab-car-ab-volvo-volvo-fh-hyundai-trago-scania-freight-transport-truck-mode-of-transport-removebg-preview.png"
+            alt="">
+        <label for="modeloCaminhao">Modelo:</label>
+        <input type="text" id="modeloCaminhao" value="Scania"><br><br>
+        <label for="corCaminhao">Cor:</label>
+        <input type="text" id="corCaminhao" value="Branco"><br><br>
+        <label for="capacidadeCarga">Capacidade de Carga (kg):</label>
+        <input type="number" id="capacidadeCarga" value="10000"><br><br>
+        <div id="resultadoCaminhao"></div>
+
+          <div class="butao">
+            <button onclick="selecionarVeiculo('meuCarroEsportivo')">Meu Carro Esportivo</button>
+            <button onclick="selecionarVeiculo('meuCaminhao')">Meu Caminhão</button>
+          </div>
+        
+          <h2>Ações:</h2>
+          <div class="acoes">
+            <button onclick="interagir(veiculoSelecionado, 'ligar')">Ligar</button>
+            <button onclick="interagir(veiculoSelecionado, 'desligar')">Desligar</button>
+            <button onclick="interagir(veiculoSelecionado, 'acelerar')">Acelerar</button>
+            <button onclick="interagir(veiculoSelecionado, 'frear')">Frear</button>
+            <button onclick="interagir(veiculoSelecionado, 'buzinar')">Buzinar</button>
+            <button onclick="interagir(veiculoSelecionado, 'ativarTurbo')">Ativar Turbo (Carro Esportivo)</button>
+            <button onclick="interagir(veiculoSelecionado, 'desativarTurbo')">Desativar Turbo (Carro Esportivo)</button>
+            <button onclick="interagir(veiculoSelecionado, 'carregar')">Carregar (Caminhão)</button>
+            <button onclick="interagir(veiculoSelecionado, 'descarregar')">Descarregar (Caminhão)</button>
+          </div>
+        
+          <h2>Informações do Veículo:</h2>
+          <div id="informacoesVeiculo"></div>
+        
+
+
+        <script src="javascript.js"></script>
+</body>
+
+</html>

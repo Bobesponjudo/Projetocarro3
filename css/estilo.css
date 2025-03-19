@@ -1,0 +1,67 @@
+body {
+    font-family: sans-serif;
+    background-color: #e9ffea;
+  }
+
+  img {
+    width: 400px;
+    display: block; /* Remove espaços extras abaixo da imagem */
+    margin: auto; /* Centraliza a imagem se ela for menor que o tamanho máximo */
+  }
+  
+  h1, h2 {
+    text-align: center;
+  }
+  
+  label {
+    display: inline-block;
+    width: 150px;
+    text-align: right;
+    margin-right: 10px;
+  }
+  
+  input[type="text"], input[type="number"] {
+    width: 200px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  button {
+    padding: 8px 15px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #337435;
+  }
+  
+  #resultadoEsportivo, #resultadoCaminhao {
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+  }
+.botao{
+    margin: auto;
+    width: 50%;
+    margin-top: 20px;
+}
+.botaocam{
+    margin-top: 10px;
+}
+.butao{
+  margin-top: 20px;
+  margin-left: 800px;
+}
+.acoes{
+  margin-left: 350px;
+}
+#informacoesVeiculo{
+  margin-left: 715px;
+}
