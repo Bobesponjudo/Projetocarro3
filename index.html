@@ -9,49 +9,74 @@
 <body>
     <h1>Polimorfia</h1>
 
-        <h2>Carro Esportivo</h2>
-        <img src="imagens/png-clipart-black-car-dodge-challenger-grey-transport-cars-removebg-preview.png" alt="">
-        <label for="modeloEsportivo">Modelo:</label>
-        <input type="text" id="modeloEsportivo" value="Dodge"><br><br>
-        <label for="corEsportivo">Cor:</label>
-        <input type="text" id="corEsportivo" value="Preto"><br><br>
-        <div id="resultadoEsportivo"></div>
+    <h2>Carro Esportivo</h2>
+    <img src="imagens/png-clipart-black-car-dodge-challenger-grey-transport-cars-removebg-preview.png" alt="">
+    <label for="modeloEsportivo">Modelo:</label>
+    <input type="text" id="modeloEsportivo" value="Dodge"><br><br>
+    <label for="corEsportivo">Cor:</label>
+    <input type="text" id="corEsportivo" value="Preto"><br><br>
+    <div id="resultadoEsportivo"></div>
 
-        <h2>Caminhão</h2>
-        <img src="imagens/png-transparent-white-scania-utility-truck-scania-ab-car-ab-volvo-volvo-fh-hyundai-trago-scania-freight-transport-truck-mode-of-transport-removebg-preview.png"
-            alt="">
-        <label for="modeloCaminhao">Modelo:</label>
-        <input type="text" id="modeloCaminhao" value="Scania"><br><br>
-        <label for="corCaminhao">Cor:</label>
-        <input type="text" id="corCaminhao" value="Branco"><br><br>
-        <label for="capacidadeCarga">Capacidade de Carga (kg):</label>
-        <input type="number" id="capacidadeCarga" value="10000"><br><br>
-        <div id="resultadoCaminhao"></div>
+    <h2>Caminhão</h2>
+    <img src="imagens/png-transparent-white-scania-utility-truck-scania-ab-car-ab-volvo-volvo-fh-hyundai-trago-scania-freight-transport-truck-mode-of-transport-removebg-preview.png"
+        alt="">
+    <label for="modeloCaminhao">Modelo:</label>
+    <input type="text" id="modeloCaminhao" value="Scania"><br><br>
+    <label for="corCaminhao">Cor:</label>
+    <input type="text" id="corCaminhao" value="Branco"><br><br>
+    <label for="capacidadeCarga">Capacidade de Carga (kg):</label>
+    <input type="number" id="capacidadeCarga" value="10000"><br><br>
+    <div id="resultadoCaminhao"></div>
+    <label for="tipo-veiculo">Tipo de Veículo:</label>
 
-          <div class="butao">
-            <button onclick="selecionarVeiculo('meuCarroEsportivo')">Meu Carro Esportivo</button>
-            <button onclick="selecionarVeiculo('meuCaminhao')">Meu Caminhão</button>
-          </div>
-        
-          <h2>Ações:</h2>
-          <div class="acoes">
-            <button onclick="interagir(veiculoSelecionado, 'ligar')">Ligar</button>
-            <button onclick="interagir(veiculoSelecionado, 'desligar')">Desligar</button>
-            <button onclick="interagir(veiculoSelecionado, 'acelerar')">Acelerar</button>
-            <button onclick="interagir(veiculoSelecionado, 'frear')">Frear</button>
-            <button onclick="interagir(veiculoSelecionado, 'buzinar')">Buzinar</button>
-            <button onclick="interagir(veiculoSelecionado, 'ativarTurbo')">Ativar Turbo (Carro Esportivo)</button>
-            <button onclick="interagir(veiculoSelecionado, 'desativarTurbo')">Desativar Turbo (Carro Esportivo)</button>
-            <button onclick="interagir(veiculoSelecionado, 'carregar')">Carregar (Caminhão)</button>
-            <button onclick="interagir(veiculoSelecionado, 'descarregar')">Descarregar (Caminhão)</button>
-          </div>
-        
-          <h2>Informações do Veículo:</h2>
-          <div id="informacoesVeiculo"></div>
-        
+    <select id="tipo-veiculo">
+        <option value="esportivo"></option>
+        <option value="esportivo">Carro Esportivo</option>
+        <option value="caminhao">Caminhão</option>
+    </select>
+    <div class="acoes2">
+        <div id="status">
+            Status: <span id="status-texto" class="desligado">Desligado</span>
+        </div>
+
+        <div id="velocidade-container">
+            <div id="velocidade-barra"></div>
+        </div>
+
+        <p>Velocidade Atual: <span id="velocidade-atual">0</span> km/h</p>
+
+        <div id="carga-container" style="display: none;">
+            <div id="carga-barra"></div>
+        </div>
+    
+        <p id="carga-atual-texto" style="display: none;">Carga Atual: <span id="carga-atual">0</span> / <span id="carga-maxima">100</span></p>
+    
+    
+    </div>
+    <div class="botao2">
+        <button id="ligar-desligar">Ligar</button>
+        <button id="acelerar">Acelerar</button>
+        <button id="frear">Frear</button>
+        <button id="buzinar">Buzinar</button>
+        <button id="turbo" style="display: none;">Turbo</button>
+        <button id="carregar" style="display: none;">Carregar</button>
+        <button id="descarregar" style="display: none;">Descarregar</button>
+    </div>
 
 
-        <script src="javascript.js"></script>
+    
+
+    <h2></h2>
+    <div class="acoes">
+       
+    </div>
+
+    <h2></h2>
+    <div id="informacoesVeiculo"></div>
+
+
+
+    <script src="javascript.js"></script>
 </body>
 
 </html>

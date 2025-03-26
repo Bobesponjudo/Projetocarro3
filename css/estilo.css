@@ -65,3 +65,41 @@ body {
 #informacoesVeiculo{
   margin-left: 715px;
 }
+#status {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.ligado {
+    color: green;
+}
+
+.desligado {
+    color: red;
+}
+
+#velocidade-container {
+    width: 200px;
+    height: 20px;
+    background-color: #ddd;
+    margin-bottom: 10px;
+}
+
+#velocidade-barra {
+    height: 100%;
+    background-color: blue;
+    width: 0%;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+}
+.acoes2{
+    margin-top: 20px;
+    margin-left: 850px;
+}
+.botao2{
+    margin-left: 755px;
+}
