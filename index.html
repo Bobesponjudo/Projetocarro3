@@ -63,7 +63,17 @@
         <button id="descarregar" style="display: none;">Descarregar</button>
     </div>
 
-
+<!-- Formulário de agendamento -->
+<div>
+  <h2>Agendar Manutenção</h2>
+  <form id="formManutencao">
+    <input type="datetime-local" id="data" required>
+    <input type="text" id="tipo" placeholder="Tipo de serviço" required>
+    <input type="number" id="custo" placeholder="Custo" required>
+    <textarea id="descricao" placeholder="Observações (opcional)"></textarea>
+    <button type="submit">Agendar Manutenção</button>
+  </form>
+</div>
     
 
     <h2></h2>
@@ -75,7 +85,7 @@
     <div id="informacoesVeiculo"></div>
 
 
-
+    <script src="veiculo.js"></script>
     <script src="javascript.js"></script>
 </body>
 

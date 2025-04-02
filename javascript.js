@@ -1,44 +1,4 @@
-class Veiculo {
-    constructor(modelo, cor) {
-      this.modelo = modelo;
-      this.cor = cor;
-      this.ligado = false;
-      this.velocidade = 0;
-    }
-  
-    ligar() {
-      this.ligado = true;
-      console.log(`${this.modelo} ligado.`);
-    }
-  
-    desligar() {
-      this.ligado = false;
-      this.velocidade = 0;
-      console.log(`${this.modelo} desligado.`);
-    }
-  
-    acelerar(incremento) {
-      if (this.ligado) {
-        this.velocidade += incremento;
-        console.log(`${this.modelo} acelerando para ${this.velocidade} km/h.`);
-      } else {
-        console.log(`${this.modelo} não pode acelerar. Ligue-o primeiro.`);
-      }
-    }
-  
-    frear(decremento) {
-      this.velocidade = Math.max(0, this.velocidade - decremento);
-      console.log(`${this.modelo} freando para ${this.velocidade} km/h.`);
-    }
-  
-    buzinar() {
-      console.log("Beep beep!");
-    }
-  
-    exibirInformacoes() {
-      return `Modelo: ${this.modelo}, Cor: ${this.cor}, Ligado: ${this.ligado}, Velocidade: ${this.velocidade} km/h`;
-    }
-  }
+
   
   // Classe CarroEsportivo
   class CarroEsportivo extends Veiculo {
@@ -405,3 +365,84 @@ class Veiculo {
         atualizarStatus();
         atualizarVelocidade();
         atualizarInterface();
+
+        class Manutencao {
+          constructor(data, tipo, custo, descricao = '') {
+            this.data = new Date(data);
+            this.tipo = tipo;
+            this.custo = custo;
+            this.descricao = descricao;
+          }
+        
+          // Método para validar dados da manutenção
+          validar() {
+            if (isNaN(this.data.getTime())) {
+              return "Data inválida.";
+            }
+            if (this.custo <= 0 || isNaN(this.custo)) {
+              return "Custo inválido.";
+            }
+            return null;
+          }
+        
+          // Método para retornar a representação formatada da manutenção
+          formatar() {
+            const dataFormatada = `${this.data.getDate()}/${this.data.getMonth() + 1}/${this.data.getFullYear()}`;
+            return `${this.tipo} em ${dataFormatada} - R$${this.custo.toFixed(2)} ${this.descricao ? `- ${this.descricao}` : ''}`;
+          }
+        }
+        
+        
+        
+        
+        function carregarGaragem() {
+          const dados = Veiculo.carregarGaragem();
+          const garagemDiv = document.getElementById('garagem');
+          garagemDiv.innerHTML = ''; // Limpar conteúdo
+        
+          dados.forEach(veiculo => {
+            const veiculoDiv = document.createElement('div');
+            veiculoDiv.innerHTML = `
+              <h3>${veiculo.tipo} ${veiculo.modelo}</h3>
+              <p>Status: ${veiculo.status}</p>
+              <h4>Histórico de Manutenções:</h4>
+              <div>${veiculo.getHistoricoFormatado()}</div>
+              <h4>Agendamentos Futuros:</h4>
+              <div>${exibirAgendamentosFuturos(veiculo)}</div>
+              <hr>
+            `;
+            garagemDiv.appendChild(veiculoDiv);
+          });
+        }
+        
+        // Função para exibir agendamentos futuros
+        function exibirAgendamentosFuturos(veiculo) {
+          const futuros = veiculo.historicoManutencao.filter(manutencao => manutencao.data > new Date());
+          return futuros.length > 0 ? futuros.map(manutencao => manutencao.formatar()).join('<br>') : 'Nenhum agendamento futuro.';
+        }
+        
+        // Chama a função para carregar a garagem ao carregar a página
+        window.onload = carregarGaragem;
+        document.getElementById('formManutencao').addEventListener('submit', function(event) {
+          event.preventDefault();
+          
+          const data = document.getElementById('data').value;
+          const tipo = document.getElementById('tipo').value;
+          const custo = parseFloat(document.getElementById('custo').value);
+          const descricao = document.getElementById('descricao').value;
+        
+          const manutencao = new Manutencao(data, tipo, custo, descricao);
+          
+          // Suponha que o veículo seja carregado da interface
+          const veiculo = new Carro('Fusca', 'em manutenção'); // Exemplo: Pegue o veículo correto da interface
+          
+          veiculo.adicionarManutencao(manutencao);
+          alert('Manutenção agendada com sucesso!');
+          carregarGaragem(); // Recarrega a garagem após adicionar manutenção
+        });
+        function exibirAgendamentosFuturos(veiculo) {
+          const futuros = veiculo.historicoManutencao.filter(manutencao => manutencao.data > new Date());
+          return futuros.length > 0 ? futuros.map(manutencao => manutencao.formatar()).join('<br>') : 'Nenhum agendamento futuro.';
+        }
+        alert('Manutenção agendada com sucesso!');
+        
