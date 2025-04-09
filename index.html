@@ -29,8 +29,7 @@
     <div id="resultadoCaminhao"></div>
     <label for="tipo-veiculo">Tipo de Veículo:</label>
 
-    <select id="tipo-veiculo">
-        <option value="esportivo"></option>
+    <select id="tipo-veiculo1">
         <option value="esportivo">Carro Esportivo</option>
         <option value="caminhao">Caminhão</option>
     </select>
@@ -48,10 +47,11 @@
         <div id="carga-container" style="display: none;">
             <div id="carga-barra"></div>
         </div>
-    
-        <p id="carga-atual-texto" style="display: none;">Carga Atual: <span id="carga-atual">0</span> / <span id="carga-maxima">100</span></p>
-    
-    
+
+        <p id="carga-atual-texto" style="display: none;">Carga Atual: <span id="carga-atual">0</span> / <span
+                id="carga-maxima">100</span></p>
+
+
     </div>
     <div class="botao2">
         <button id="ligar-desligar">Ligar</button>
@@ -63,30 +63,96 @@
         <button id="descarregar" style="display: none;">Descarregar</button>
     </div>
 
-<!-- Formulário de agendamento -->
-<div>
-  <h2>Agendar Manutenção</h2>
-  <form id="formManutencao">
-    <input type="datetime-local" id="data" required>
-    <input type="text" id="tipo" placeholder="Tipo de serviço" required>
-    <input type="number" id="custo" placeholder="Custo" required>
-    <textarea id="descricao" placeholder="Observações (opcional)"></textarea>
-    <button type="submit">Agendar Manutenção</button>
-  </form>
-</div>
-    
+    <div class="container">
+        <section id="adicionar-veiculo">
+            <h2>Adicionar Veículo</h2>
+            <form id="form-add-veiculo">
+                <label for="tipo-veiculo">Tipo:</label>
+                <select id="tipo-veiculo" required>
+                    <option value="CarroEsportivo">Carro Esportivo</option>
+                    <option value="Caminhao">Caminhão</option>
+                </select>
+
+                <label for="modelo">Modelo:</label>
+                <input type="text" id="modelo" required>
+
+                <label for="placa">Placa (ID Único):</label>
+                <input type="text" id="placa" required>
+
+                <label for="status-veiculo">Status:</label>
+                <select id="status-veiculo">
+                    <option value="Disponível">Disponível</option>
+                    <option value="Em Manutenção">Em Manutenção</option>
+                    <option value="Ocupado">Ocupado</option>
+                </select>
+                <button type="submit">Adicionar à Garagem</button>
+            </form>
+        </section>
+
+        <section id="garagem">
+            <h2>Veículos na Garagem</h2>
+            <div id="lista-veiculos">
+                <!-- Veículos serão adicionados aqui via JavaScript -->
+            </div>
+        </section>
+
+        <section id="agendamentos">
+            <h2>Agendamentos Futuros</h2>
+            <ul id="lista-agendamentos-futuros">
+                <!-- Agendamentos futuros serão listados aqui -->
+            </ul>
+        </section>
+    </div>
+
+    <!-- Modal ou Seção para Detalhes e Agendamento de Manutenção (inicialmente oculto) -->
+    <div id="modal-manutencao" class="modal">
+        <div class="modal-content">
+            <span class="close-button">×</span>
+            <h3 id="modal-titulo-veiculo">Manutenção do Veículo</h3>
+            <input type="hidden" id="modal-veiculo-id">
+
+            <h4>Histórico de Manutenção</h4>
+            <ul id="modal-historico-manutencao">
+                <!-- Histórico será preenchido aqui -->
+            </ul>
+
+            <h4>Agendar Nova Manutenção</h4>
+            <form id="form-agendar-manutencao">
+                <label for="manutencao-data">Data:</label>
+                <input type="datetime-local" id="manutencao-data" required>
+                <!-- Usando datetime-local para data e hora, ou um datepicker -->
+
+                <label for="manutencao-tipo">Tipo de Serviço:</label>
+                <input type="text" id="manutencao-tipo" placeholder="Ex: Troca de óleo" required>
+
+                <label for="manutencao-custo">Custo (R$):</label>
+                <input type="number" id="manutencao-custo" min="0" step="0.01" value="0" required>
+                <!-- Custo pode ser 0 para agendamentos futuros -->
+
+                <label for="manutencao-descricao">Descrição (Opcional):</label>
+                <textarea id="manutencao-descricao" rows="3"></textarea>
+
+                <button type="submit">Agendar/Registrar Manutenção</button>
+            </form>
+        </div>
+    </div>
+
 
     <h2></h2>
     <div class="acoes">
-       
+
     </div>
 
     <h2></h2>
     <div id="informacoesVeiculo"></div>
 
-
+    
     <script src="veiculo.js"></script>
+    <script src="carro.js"></script>
+    <script src="caminhao.js"></script>
+    <script src="carroesportivo.js"></script>
     <script src="javascript.js"></script>
+    <script src="manutencao.js"></script>
 </body>
 
 </html>
