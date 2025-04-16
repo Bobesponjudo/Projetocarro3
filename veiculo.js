@@ -1,115 +1,153 @@
-// Classe Veiculo (base)
+
 class Veiculo {
-  constructor(tipo, modelo, status) {
-    this.tipo = tipo;
-    this.modelo = modelo;
-    this.status = status; // Exemplo: 'em manutenção', 'disponível'
-    this.historicoManutencao = [];
-  }
-  
-  // Adicionar uma nova manutenção
-  adicionarManutencao(manutencao) {
-    const erro = manutencao.validar();
-    if (erro) {
-      alert(erro);
-      return;
-    }
-    this.historicoManutencao.push(manutencao);
-    this.salvarNoLocalStorage();
-  }
-
-  // Retornar histórico formatado
-  getHistoricoFormatado() {
-    return this.historicoManutencao.map(manutencao => manutencao.formatar()).join('<br>');
-  }
-
-  // Salvar os dados no LocalStorage
-  salvarNoLocalStorage() {
-    const dados = JSON.parse(localStorage.getItem('garagem')) || [];
-    const veiculosIndexados = dados.filter(veiculo => veiculo.modelo !== this.modelo);
-    veiculosIndexados.push(this);
-    localStorage.setItem('garagem', JSON.stringify(veiculosIndexados));
-  }
-
-  // Carregar a garagem do LocalStorage
-  static carregarGaragem() {
-    const dados = JSON.parse(localStorage.getItem('garagem')) || [];
-    return dados.map(dado => {
-      const veiculo = new Veiculo(dado.tipo, dado.modelo, dado.status);
-      veiculo.historicoManutencao = dado.historicoManutencao.map(manutencao => new Manutencao(manutencao.data, manutencao.tipo, manutencao.custo, manutencao.descricao));
-      return veiculo;
-    });
-  }
-}
-
-
-class Veiculo1 {
-  // Usar placa como ID único simplifica
-  constructor(modelo, placa, status = 'Disponível') {
-    if (!modelo || !placa) {
-      throw new Error("Modelo e Placa são obrigatórios para criar um veículo.");
-    }
-    this.modelo = modelo;
-    this.placa = placa; // Usaremos placa como ID
-    this.status = status;
-    this.historicoManutencao = []; // Array de objetos Manutencao
-    this.tipoVeiculo = this.constructor.name; // Guarda o tipo para recriar do LocalStorage
-  }
-
-  adicionarManutencao(manutencao) {
-    if (manutencao instanceof Manutencao && manutencao.validar()) {
-      this.historicoManutencao.push(manutencao);
-      // Ordena por data (mais recente primeiro ou último) - opcional
-      this.historicoManutencao.sort((a, b) => (b.data || 0) - (a.data || 0)); // Mais recentes primeiro
-      console.log(`Manutenção adicionada para ${this.modelo} (${this.placa})`);
-    } else {
-      alert("Erro: Tentativa de adicionar manutenção inválida.");
-      console.error("Objeto Manutencao inválido:", manutencao);
-    }
-  }
-
-  getHistoricoFormatado() {
-    if (!this.historicoManutencao || this.historicoManutencao.length === 0) {
-      return ["Nenhum histórico de manutenção registrado."];
-    }
-    return this.historicoManutencao.map(m => m.formatar());
-  }
-
-  // Método para facilitar a recriação a partir do JSON
-  static fromJSON(json) {
-    if (!json || !json.modelo || !json.placa || !json.tipoVeiculo) return null;
-
-    let veiculo;
-    // Determina qual classe instanciar
-    switch (json.tipoVeiculo) {
-      
-      case 'CarroEsportivo':
-        veiculo = new CarroEsportivo(json.modelo, json.placa, json.status);
-        if (json.velocidadeMaxima) veiculo.velocidadeMaxima = json.velocidadeMaxima;
-        if (json.numeroPortas) veiculo.numeroPortas = json.numeroPortas;
-        break;
-      case 'Caminhao':
-        veiculo = new Caminhao(json.modelo, json.placa, json.status);
-        if (json.capacidadeCarga) veiculo.capacidadeCarga = json.capacidadeCarga;
-        break;
-      default:
-        console.warn(`Tipo de veículo desconhecido ao carregar: ${json.tipoVeiculo}`);
-        // Pode instanciar Veiculo como fallback ou retornar null
-        veiculo = new Veiculo(json.modelo, json.placa, json.status);
-        break; // Ou return null;
+    /**
+     * Cria uma instância de Veiculo.
+     * @param {string} modelo - O modelo do veículo.
+     * @param {string} cor - A cor do veículo.
+     */
+    constructor(modelo, cor) {
+        this.modelo = modelo || "Não definido";
+        this.cor = cor || "Não definida";
+        this.combustivel = 100; // Percentual
+        this.historicoManutencao = []; // Array de instâncias de Manutencao
+        this.nomeNaGaragem = null; // Identificador interno (ex: 'meuCarro')
     }
 
-    // Recria os objetos Manutencao a partir dos dados JSON
-    if (json.historicoManutencao && Array.isArray(json.historicoManutencao)) {
-      veiculo.historicoManutencao = json.historicoManutencao
-        .map(mJson => Manutencao.fromJSON(mJson))
-        .filter(m => m !== null); // Filtra entradas inválidas
-      // Reordena após carregar, se necessário
-      veiculo.historicoManutencao.sort((a, b) => (b.data || 0) - (a.data || 0));
-    } else {
-      veiculo.historicoManutencao = [];
+    // --- Ações Comuns ---
+
+    /**
+     * Pinta o veículo com uma nova cor.
+     * @param {string} novaCor - A nova cor desejada.
+     * @returns {boolean} True se a pintura foi bem-sucedida, false caso contrário.
+     *//**
+* @class Veiculo
+* @description Classe base para todos os veículos da garagem. Contém propriedades
+*              e métodos comuns como pintar, abastecer e gerenciar histórico de manutenção.
+*/
+    pintar(novaCor) {
+        if (novaCor && typeof novaCor === 'string' && novaCor.trim() !== '') {
+            this.cor = novaCor.trim();
+            if (this.atualizarDetalhes) this.atualizarDetalhes(); // Atualiza UI se método existir
+            console.log(`Veículo ${this.nomeNaGaragem} pintado de ${this.cor}`);
+            garagem.salvarGaragem(); // Persiste a mudança
+            return true;
+        } else {
+            alert("Por favor, insira uma cor válida.");
+            return false;
+        }
+    }
+    /**
+       * Pinta o veículo com uma nova cor.
+       * @param {string} novaCor - A nova cor desejada.
+       * @returns {boolean} True se a pintura foi bem-sucedida (cor válida), false caso contrário.
+       */
+    /**
+     * Adiciona um registro de manutenção JÁ VALIDADO ao histórico do veículo.
+     * @param {Manutencao} manutencao - O objeto Manutencao validado.
+     * @returns {boolean} True se adicionado com sucesso.
+     */
+    adicionarManutencaoValidada(manutencao) {
+        if (!(manutencao instanceof Manutencao)) {
+            console.error("Tentativa de adicionar manutenção não validada ou de tipo incorreto.", manutencao);
+            return false;
+        }
+        this.historicoManutencao.push(manutencao);
+        console.log(`Manutenção (${manutencao.status}) adicionada para ${this.nomeNaGaragem}.`);
+        garagem.atualizarDisplaysManutencao(this.nomeNaGaragem, this.modelo); // Atualiza UI (lista agendamentos, info veículo)
+        garagem.salvarGaragem(); // Persiste a mudança
+        alert(`Manutenção ${manutencao.status === 'agendada' ? 'agendada' : 'registrada'} com sucesso!`);
+        return true;
     }
 
-    return veiculo;
-  }
+    // --- Exibição de Informações ---
+
+    /**
+     * Retorna uma string formatada com as informações básicas e o histórico CONCLUÍDO do veículo.
+     * As subclasses devem chamar este método e adicionar suas informações específicas.
+     * @returns {string} Informações formatadas.
+     */
+    exibirInformacoes() {
+        let info = `Modelo: ${this.modelo}\nCor: ${this.cor}\nCombustível: ${this.combustivel}%`;
+
+        // Filtra manutenções concluídas
+        const concluidas = this.historicoManutencao.filter(m => m.status === 'concluida');
+
+        // Delega a formatação do histórico para o helper da Garagem
+        info += "\n\n--- Histórico de Manutenção Realizada ---";
+        info += garagem._renderizarHistoricoConcluido(concluidas);
+
+        return info;
+    }
+
+    // --- Métodos de Atualização de UI (Placeholders) ---
+    // Estes métodos devem ser implementados ou sobrescritos pelas subclasses
+    // para interagir com os elementos HTML específicos de cada tipo de veículo.
+
+    /** Atualiza os detalhes visuais (modelo, cor) na UI. */
+    atualizarDetalhes() { console.warn(`atualizarDetalhes não implementado para ${this.constructor.name}`); }
+    /** Atualiza o status visual (Ligado/Desligado) e habilita/desabilita botões na UI. */
+    atualizarStatus() { console.warn(`atualizarStatus não implementado para ${this.constructor.name}`); }
+    /** Atualiza o display numérico de velocidade (km/h) na UI. */
+    atualizarVelocidadeDisplay() { console.warn(`atualizarVelocidadeDisplay não implementado para ${this.constructor.name}`); }
+    /** Atualiza a barra/ponteiro de velocidade na UI. */
+    atualizarPonteiroVelocidade() { console.warn(`atualizarPonteiroVelocidade não implementado para ${this.constructor.name}`); }
+    /** Atualiza áreas de informação específicas (Turbo, Carga) na UI. */
+    atualizarInfoDisplay() { /* Pode ser vazio para veículos sem info extra */ }
+
+    // --- Helpers Internos ---
+
+    /**
+     * Ativa uma animação CSS (aceleração ou freagem) no elemento correspondente.
+     * @param {'aceleracao' | 'freagem'} tipoAnimacao - O tipo de animação.
+     * @param {string} prefixoId - O prefixo do ID do elemento HTML (ex: 'carro', 'carroEsportivo').
+     */
+    ativarAnimacao(tipoAnimacao, prefixoId) {
+        const elemento = document.getElementById(`animacao-${tipoAnimacao}-${prefixoId}`);
+        if (elemento) {
+            elemento.classList.add('ativa');
+            // Remove a classe após a duração da animação CSS
+            setTimeout(() => elemento.classList.remove('ativa'), 300);
+        }
+    }
+
+    /**
+     * Obtém o prefixo usado nos IDs principais dos elementos HTML deste veículo.
+     * Ex: 'carro', 'carroEsportivo', 'caminhao', 'moto'.
+     * @returns {string} O prefixo do ID.
+     */
+    obterPrefixoIdHtml() {
+        // Mapeia o nome interno da garagem para o prefixo do ID HTML
+        switch (this.nomeNaGaragem) {
+            case 'meuCarro': return 'carro';
+            case 'carroEsportivo': return 'carroEsportivo';
+            case 'caminhao': return 'caminhao';
+            case 'moto': return 'moto';
+            default:
+                console.error("Nome interno de veículo desconhecido:", this.nomeNaGaragem);
+                return '';
+        }
+    }
+
+    /**
+     * Obtém o sufixo usado nos IDs dos elementos do *formulário de manutenção* deste veículo.
+     * Ex: 'Carro', 'Esportivo', 'Caminhao', 'Moto'. (Note a capitalização)
+     * @returns {string} O sufixo do ID do formulário.
+     */
+    /**
+     * Obtém o sufixo capitalizado usado nos IDs dos elementos do *formulário de manutenção* deste veículo.
+     * @protected // Indica que é para uso interno ou por subclasses
+     * @returns {string} O sufixo do ID do formulário (ex: 'Carro', 'Esportivo', 'Caminhao', 'Moto') ou string vazia se não mapeado.
+     */
+    obterIdHtmlSufixoFormulario() {
+        // Mapeia o nome interno para o sufixo usado nos IDs dos inputs de manutenção
+        switch (this.nomeNaGaragem) {
+            case 'meuCarro': return 'Carro';
+            case 'carroEsportivo': return 'Esportivo'; // Corrigido
+            case 'caminhao': return 'Caminhao';
+            case 'moto': return 'Moto';
+            default:
+                console.error("Nome interno de veículo desconhecido para sufixo de form:", this.nomeNaGaragem);
+                return '';
+        }
+    }
 }
