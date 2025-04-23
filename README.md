@@ -54,6 +54,7 @@ A Garagem Inteligente Virtual é um projeto desenvolvido para simular a experiê
 *   **Ajuda:** Google AI Studio.
 
   ✍️ Autor
+
 Feito com ❤️ por Luana Sathler Melo.
 GitHub:github.com/https://github.com/Bobesponjudo
 E-mail: sathleeluana@gmail.com
