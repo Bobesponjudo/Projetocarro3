@@ -607,54 +607,113 @@ class Garagem {
     // --- Lembretes de Agendamento ---
 
     /** Verifica e exibe um alerta com agendamentos para hoje ou amanhã. */
-    verificarAgendamentosProximos() {
+    // --- Dentro da classe Garagem em garagem.js ---
+
+    /** Verifica e exibe um alerta com agendamentos para hoje ou amanhã. */
+    verificarAgendamentosProximos() { // <-- Abre o método
         console.log("Verificando agendamentos próximos...");
         const agora = new Date();
-        // Calcula início de hoje, amanhã e depois de amanhã para comparação de datas
+        // ... (cálculos de data) ...
         const hojeInicio = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate());
-        const amanhaInicio = new Date(hojeInicio.getTime() + 24 * 60 * 60 * 1000); // +1 dia
-        const depoisDeAmanhaInicio = new Date(amanhaInicio.getTime() + 24 * 60 * 60 * 1000); // +2 dias
+        const amanhaInicio = new Date(hojeInicio.getTime() + 24 * 60 * 60 * 1000);
+        const depoisDeAmanhaInicio = new Date(amanhaInicio.getTime() + 24 * 60 * 60 * 1000);
 
-        const lembretes = []; // Array para guardar as mensagens de lembrete
+        const lembretes = [];
 
-        // Itera por todos os veículos e suas manutenções
-        for (const nomeVeiculo in this.veiculos) {
+        // Itera por todos os veículos
+        for (const nomeVeiculo in this.veiculos) { // <-- Abre for...in
             const veiculo = this.veiculos[nomeVeiculo];
-            if (Array.isArray(veiculo.historicoManutencao)) {
-                veiculo.historicoManutencao.forEach(manutencao => {
-                    const m = manutencao; // Já deve ser instância
-                    if (!m) return;
+            if (Array.isArray(veiculo.historicoManutencao)) { // <-- Abre if isArray
+                veiculo.historicoManutencao.forEach(manutencao => { // <-- Abre forEach
+                    const m = manutencao;
+                    if (!m) return; // Pula se null/undefined
 
                     const dataM = m.getDateTime();
-                    // Verifica se é agendada, válida e tem data válida
-                    if (m.status === 'agendada' && m.validar().length === 0 && dataM) {
+                    // Verifica agendamento válido e futuro próximo
+                    if (m.status === 'agendada' && m.validar().length === 0 && dataM) { // <-- Abre if status/validar/dataM
                         let quando = '';
-                        // Verifica se a data/hora está entre agora e o início de amanhã
-                        if (dataM >= agora && dataM < amanhaInicio) {
+                        // Verifica se é hoje
+                        if (dataM >= agora && dataM < amanhaInicio) { // <-- Abre if hoje
                             quando = "hoje";
-                        }
-                        // Verifica se a data/hora está entre o início de amanhã e o início de depois de amanhã
-                        else if (dataM >= amanhaInicio && dataM < depoisDeAmanhaInicio) {
+                        } // <-- Fecha if hoje
+                        // Verifica se é amanhã
+                        else if (dataM >= amanhaInicio && dataM < depoisDeAmanhaInicio) { // <-- Abre else if amanhã
                             quando = "amanhã";
-                        }
+                        } // <-- Fecha else if amanhã
 
-                        // Se for hoje ou amanhã, cria a mensagem de lembrete
-                        if (quando) {
-                            let horaFormatada = m.hora ? ` às ${m.hora}` : ''; // Adiciona hora se existir
+                        // Se for hoje ou amanhã, cria o lembrete
+                        if (quando) { // <-- Abre if quando
+                            let horaFormatada = m.hora ? ` às ${m.hora}` : '';
                             lembretes.push(`- ${m.tipo} (${veiculo.modelo}) agendado para ${quando}${horaFormatada}.`);
-                        }
-                    }
-                });
-            }
-        }
+                        } // <-- Fecha if quando
+                    } // <-- Fecha if status/validar/dataM
+                }); // <-- Fecha forEach
+            } // <-- Fecha if isArray
+        } // <-- Fecha for...in  <<<<< PROCURE POR UMA '}' EXTRA AQUI OU LOGO APÓS
 
-        // Se houver lembretes, mostra um alerta único
-        if (lembretes.length > 0) {
+        // ----- Bloco if/else para exibir lembretes -----
+        // A linha 665 provavelmente está aqui ou na chave de abertura do if
+
+        if (lembretes.length > 0) { // <-- Abre if lembretes.length
             console.log("Lembretes encontrados:", lembretes);
             alert("🔔 Lembretes de Agendamento:\n\n" + lembretes.join("\n\n"));
-        } else {
-            // Se não houver, apenas loga no console
+        } else { // <-- Abre else
             console.log("Nenhum lembrete de agendamento para hoje ou amanhã.");
+        } // <-- Fecha else
+
+    } // <-- Fecha o método verificarAgendamentosProximos (DEVE HAVER APENAS UMA AQUI)
+
+// } // <-- Fecha a classe Garagem (mais abaixo no arquivo)
+ // --- Dentro da classe Garagem em garagem.js ---
+
+    /**
+     * Busca detalhes extras de um veículo usando a API simulada e atualiza a UI.
+     * Lida com erros de busca de elementos e da API.
+     * @param {string} nomeVeiculo - O identificador interno do veículo (ex: 'meuCarro').
+     */
+    // ***** ADICIONE 'async' AQUI *****
+    async buscarDetalhesExtras(nomeVeiculo) { // <--- CORREÇÃO AQUI
+        console.log(`[Garagem] Iniciando busca de detalhes extras para: ${nomeVeiculo}`);
+
+        const veiculo = this.veiculos[nomeVeiculo];
+        // ... (resto das verificações de veículo e elementos HTML como antes) ...
+        const btnId = `detalhes-${nomeVeiculo}-btn`;
+        const divId = `extra-details-${nomeVeiculo}`;
+        const detalhesBtn = document.getElementById(btnId);
+        const detalhesDiv = document.getElementById(divId);
+
+        if (!veiculo) { /* ... tratamento de erro ... */ return; }
+        if (!detalhesBtn) { /* ... tratamento de erro ... */ return; }
+        if (!detalhesDiv) { /* ... tratamento de erro ... */ return; }
+
+        // ----- Início da lógica assíncrona -----
+        detalhesDiv.innerHTML = '⏳ Carregando detalhes extras...';
+        detalhesDiv.style.display = 'block';
+        detalhesBtn.disabled = true;
+
+        try {
+            console.log(`[Garagem] Chamando fetchExtraVehicleDetails para ${nomeVeiculo}...`);
+            // A linha 697 provavelmente está AQUI ou logo após
+            const detalhes = await fetchExtraVehicleDetails(nomeVeiculo); // <--- 'await' está OK agora por causa do 'async' acima
+            console.log(`[Garagem] Detalhes recebidos para ${nomeVeiculo}:`, detalhes);
+
+            // ... (resto da formatação e exibição dos detalhes HTML) ...
+             let detalhesHtml = `<strong>Detalhes Adicionais (${veiculo.modelo ?? 'Veículo'}):</strong><ul style="margin-top: 5px; padding-left: 20px; list-style: disc;">`;
+            detalhesHtml += `<li>Ano: ${detalhes.ano ?? 'N/D'}</li>`;
+            detalhesHtml += `<li>Motor: ${detalhes.motor ?? 'N/D'}</li>`;
+            // ... (etc.) ...
+            detalhesHtml += `</ul>`;
+            detalhesDiv.innerHTML = detalhesHtml;
+
+        } catch (error) {
+            // ... (tratamento de erro como antes) ...
+             console.error(`[Garagem] Erro ao buscar/processar detalhes extras para ${nomeVeiculo}:`, error);
+             detalhesDiv.innerHTML = `<span style="color: red; font-weight: bold;">Falha ao carregar detalhes:</span><br><span style="color: red;">${error.message || 'Erro desconhecido na API.'}</span>`;
+        } finally {
+            // ... (reabilitar botão como antes) ...
+             console.log(`[Garagem] Finalizando busca de detalhes para ${nomeVeiculo}. Reabilitando botão.`);
+            detalhesBtn.disabled = false;
         }
-    }
+    } // <-- Fecha o método async buscarDetalhesExtras
 }
+// --- Fim do método buscarDetalhesExtras --- 

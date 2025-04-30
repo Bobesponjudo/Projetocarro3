@@ -1,4 +1,4 @@
-// script.js (v7 - Organizado e Comentado)
+// script.js (v7 - Organizanomeo e Comentado)
 
 // =============================================================================
 // === CLASSE Manutencao =======================================================
@@ -65,27 +65,33 @@
 // =============================================================================
 
 // Cria a instância da Garagem (o construtor já chama carregarGaragem)
+
+
+// Executa quando o HTML da página estiver completamente carregado
 const garagem = new Garagem();
+console.log('[script.js] Instância da Garagem criada:', typeof garagem); // Log para ver se funcionou
 
 // Executa quando o HTML da página estiver completamente carregado
 window.onload = () => {
+    console.log('[script.js] window.onload iniciado. Verificando garagem:', typeof garagem); // Verifica de novo
+    // SEU CÓDIGO ANTERIOR QUE USA 'garagem' (linha 73 e seguintes)
+    if (!garagem) { // Adiciona uma verificação extra
+        console.error("[script.js] ERRO FATAL DENTRO DE window.onload: 'garagem' ainda é undefined!");
+        alert("Erro crítico ao inicializar a aplicação. Verifique o console.");
+        return;
+    }
+
     // Verifica se a garagem foi carregada vazia (nenhum dado no localStorage)
-    if (Object.keys(garagem.veiculos).length === 0) {
+    if (Object.keys(garagem.veiculos).length === 0) { // A linha 73 original estava aqui
         console.log("Garagem vazia. Criando veículos padrão...");
-        // Cria os veículos padrão (os métodos _criarOuAtualizarVeiculo já salvam e atualizam UI parcial)
         garagem.criarCarro();
         garagem.criarMoto();
         garagem.criarCarroEsportivo();
         garagem.criarCaminhao();
-        // Após criar, atualiza a lista de agendamentos (que estará vazia) e mostra infos do 1º carro
         garagem.atualizarListaAgendamentos();
         garagem.exibirInformacoes('meuCarro');
     } else {
-        // Se a garagem foi carregada com dados, atualiza toda a UI para refletir o estado carregado
         console.log("Veículos carregados do localStorage. Atualizando UI completa.");
         garagem.atualizarUICompleta();
     }
-
-    // Após carregar ou criar os veículos, verifica se há lembretes próximos
-    garagem.verificarAgendamentosProximos();
-};
+    garagem.verificarAgendamentosProximos();};
