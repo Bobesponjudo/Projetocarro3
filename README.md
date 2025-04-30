@@ -46,7 +46,53 @@ A Garagem Inteligente Virtual é um projeto desenvolvido para simular a experiê
 
 4.  **Motocicleta 🏍️:**
     *   Possui todas as ações comuns.
-  
+
+  ## Recurso: Detalhes Extras do Veículo (API Simulada)
+
+Para enriquecer a experiência da Garagem Interativa e demonstrar como uma aplicação front-end pode interagir com fontes de dados externas, foi implementada uma **API simulada** para buscar detalhes adicionais sobre cada veículo.
+
+### O que faz?
+
+*   Quando o usuário clica no botão "Ver Detalhes (API Sim.)" em um veículo específico, a aplicação simula uma chamada a um serviço externo.
+*   Essa "API" retorna informações extras sobre o veículo selecionado, como:
+    *   Ano de fabricação
+    *   Tipo do motor
+    *   Tipo de transmissão
+    *   País de origem
+    *   Data da última revisão (simulada)
+    *   Detalhes específicos (ex: número de eixos para caminhões, ABS para motos)
+
+### Como Funciona (Simulação)
+
+*   **Não há um servidor real:** A "API" é implementada diretamente no front-end (no arquivo `simulatedApi.js` ou similar) usando uma função JavaScript (`fetchExtraVehicleDetails`).
+*   **Assincronia:** A função retorna uma `Promise`, simulando a natureza assíncrona de uma chamada de rede real.
+*   **Latência:** Um `setTimeout` introduz um atraso aleatório (geralmente entre 0.8 e 1.8 segundos) para simular o tempo de resposta da rede.
+*   **Erros Simulados:** Há uma chance (controlada por `Math.random()`) de a Promise ser rejeitada com um erro, simulando falhas de comunicação ou erros no servidor.
+*   **Dados Fictícios:** Os detalhes retornados são dados fictícios e pré-definidos dentro da função `fetchExtraVehicleDetails`, geralmente baseados no identificador interno do veículo (`'meuCarro'`, `'moto'`, etc.).
+
+### Como Usar na Interface
+
+1.  Carregue a aplicação (`index.html`).
+2.  Localize a seção do veículo desejado (Carro, Moto, etc.).
+3.  Clique no botão **"Ver Detalhes (API Sim.)"**.
+4.  Observe a mensagem "⏳ Carregando detalhes extras..." que aparece abaixo dos botões.
+5.  Aguarde o tempo de simulação.
+6.  Os detalhes adicionais (ou uma mensagem de erro simulada) serão exibidos na área de "Detalhes Extras". O botão será reabilitado.
+
+### Implementação Técnica
+
+*   **`index.html`**: Contém o botão (`id="detalhes-NOMEINTERNO-btn"`) e a `div` (`id="extra-details-NOMEINTERNO"`) para cada veículo, responsáveis por disparar a ação e exibir o resultado.
+*   **`simulatedApi.js`**: Define a função `fetchExtraVehicleDetails(nomeVeiculo)` que retorna a `Promise` com os dados simulados ou um erro.
+*   **`garagem.js`**:
+    *   A classe `Garagem` possui o método `async buscarDetalhesExtras(nomeVeiculo)`.
+    *   Este método é chamado pelo `onclick` do botão.
+    *   Ele localiza os elementos HTML (botão e div).
+    *   Atualiza a UI para indicar o carregamento.
+    *   Chama `await fetchExtraVehicleDetails(nomeVeiculo)` para obter os dados.
+    *   Usa um bloco `try...catch...finally` para processar a resposta (sucesso ou erro) e atualizar a `div` com os resultados formatados.
+    *   Reabilita o botão no bloco `finally`.
+
+Este recurso serve como um excelente exemplo de como preparar a aplicação para consumir APIs reais no futuro, tratando estados de carregamento, sucesso e erro de forma assíncrona.
 
 🚀 Tecnologias Utilizadas
 
