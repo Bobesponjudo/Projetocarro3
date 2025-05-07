@@ -93,9 +93,53 @@ Para enriquecer a experiência da Garagem Interativa e demonstrar como uma aplic
     *   Reabilita o botão no bloco `finally`.
 
 Este recurso serve como um excelente exemplo de como preparar a aplicação para consumir APIs reais no futuro, tratando estados de carregamento, sucesso e erro de forma assíncrona.
+## Últimas Atualizações (Feitas Hoje - DD/MM/AAAA)
+
+*   **Integração com API de Clima (OpenWeatherMap):**
+    *   Adicionado um novo arquivo `weatherService.js` para encapsular a lógica de chamada à API OpenWeatherMap.
+    *   Implementada a funcionalidade para buscar dados do clima (temperatura, descrição, ícone, umidade, vento).
+    *   **Permitido ao usuário escolher a cidade:**
+        *   Adicionado um campo de input e um botão na interface (`index.html`) para que o usuário possa digitar o nome da cidade desejada.
+        *   A lógica em `script.js` foi atualizada para capturar a cidade informada e solicitar os dados do clima correspondentes através do `weatherService.js` e da classe `Garagem`.
+    *   Exibição dinâmica das informações do clima na interface.
+    *   **Aviso de Segurança sobre a Chave API:** Incluído um aviso proeminente no `weatherService.js` sobre os riscos de expor a chave API diretamente no código frontend e a recomendação de usar um backend proxy para aplicações em produção.
+*   **Refinamentos na UI de Clima:**
+    *   Exibição de mensagem de "Carregando..." durante a busca do clima.
+    *   Tratamento de erros na busca e exibição de mensagens apropriadas para o usuário (ex: chave não configurada, cidade não encontrada, falha de rede).
+*   **Organização do Código:**
+    *   Funções relacionadas à API de clima foram centralizadas em `weatherService.js`.
+    *   A classe `Garagem` agora coordena a chamada para buscar e exibir o clima.
+    *   O arquivo `script.js` lida com a interação do usuário para a seleção da cidade.
+
+## Como Rodar o Projeto
+
+1.  Clone este repositório: `git clone [URL_DO_SEU_REPOSITORIO]`
+2.  Navegue até a pasta do projeto: `cd [NOME_DA_PASTA_DO_PROJETO]`
+3.  **Obtenha uma chave da API OpenWeatherMap:**
+    *   Visite [openweathermap.org/appid](https://openweathermap.org/appid) e crie uma conta/faça login para obter sua chave API gratuita.
+4.  **Configure a Chave API (MUITO IMPORTANTE):**
+    *   Abra o arquivo `weatherService.js`.
+    *   Localize a linha: `const OPENWEATHER_API_KEY = "SUA_CHAVE_OPENWEATHERMAP_AQUI";`
+    *   Substitua `"SUA_CHAVE_OPENWEATHERMAP_AQUI"` pela sua chave API real.
+    *   **Leia atentamente o aviso de segurança sobre a chave API no topo do arquivo `weatherService.js`.**
+5.  Abra o arquivo `index.html` em seu navegador de preferência.
+    *   (Opcional) Se você tiver a extensão "Live Server" no VS Code, pode usá-la para servir o projeto.
+
+*(Restante do seu README, como Tecnologias Usadas, Estrutura do Projeto, Próximos Passos, etc.)*
+
+---
 
 🚀 Tecnologias Utilizadas
 
+*   HTML5
+*   CSS3
+*   JavaScript (ES6+)
+    *   Programação Orientada a Objetos (Classes, Herança)
+    *   Manipulação do DOM
+    *   LocalStorage API
+    *   Fetch API (para OpenWeatherMap e simulação de API interna)
+    *   Funções Assíncronas (async/await)
+*   OpenWeatherMap API (para dados do clima)
 *   **Frontend:** HTML, CSS, JavaScript puro.
 *   **Ajuda:** Google AI Studio.
 
