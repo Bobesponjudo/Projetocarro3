@@ -93,7 +93,7 @@ Para enriquecer a experiência da Garagem Interativa e demonstrar como uma aplic
     *   Reabilita o botão no bloco `finally`.
 
 Este recurso serve como um excelente exemplo de como preparar a aplicação para consumir APIs reais no futuro, tratando estados de carregamento, sucesso e erro de forma assíncrona.
-## Últimas Atualizações (Feitas Hoje - DD/MM/AAAA)
+## Últimas Atualizações
 
 *   **Integração com API de Clima (OpenWeatherMap):**
     *   Adicionado um novo arquivo `weatherService.js` para encapsular a lógica de chamada à API OpenWeatherMap.
