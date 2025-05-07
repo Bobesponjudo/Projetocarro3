@@ -12,7 +12,22 @@
 <body>
     <main>
         <h1>Garagem Interativa</h1> <!-- Título Mantido -->
-
+        <!-- NOVA SEÇÃO PARA O CLIMA -->
+        <section id="weather-container" class="container" style="text-align: center; margin-bottom: 20px;">
+            <h2>Clima Atual</h2>
+            <!-- INPUT E BOTÃO PARA CIDADE -->
+            <div style="margin-bottom: 10px;">
+                <input type="text" id="cityInput" placeholder="Digite o nome da cidade" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
+                <button id="searchWeatherBtn" style="padding: 8px 12px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                    Buscar Clima
+                </button>
+            </div>
+            <!-- FIM INPUT E BOTÃO -->
+            <div id="weather-info" style="padding: 10px; background-color: #eef; border-radius: 5px;">
+                Carregando informações do clima... (ou digite uma cidade acima)
+            </div>
+        </section>
+        <hr> <!-- FIM DA NOVA SEÇÃO PARA O CLIMA -->
         <!-- Seção Carro -->
         <section class="container">
             <h2>Carro</h2>
@@ -334,21 +349,15 @@
 
     </main>
     <script src="manutencao.js"></script>
-    <!-- 2. Classe Base Veiculo -->
     <script src="veiculo.js"></script>
-    <!-- 3. Classes Derivadas -->
     <script src="carro.js"></script>
-    <script src="carroEsportivo.js"></script> <!-- Ou carroesportivo (1).js, qual for o correto -->
+    <script src="carroEsportivo.js"></script>
     <script src="caminhao.js"></script>
     <script src="moto.js"></script>
-    <!-- 4. Classe Gerenciadora Garagem -->
-    <script src="garagem.js"></script>      <!-- <<<<<< GARAGEM.JS PRIMEIRO -->
-    <!-- 5. API Simulada (se separada) -->
+    <script src="weatherService.js"></script>
     <script src="simulated.js"></script>
-    <!-- 6. Script Principal (que instancia Garagem e usa window.onload) -->
-    <script src="script.js"></script>       <!-- <<<<<< SCRIPT.JS DEPOIS -->
-    
-
+    <script src="garagem.js"></script>
+    <script src="script.js"></script>
 </body>
 
 </html>

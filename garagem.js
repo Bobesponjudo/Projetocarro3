@@ -7,6 +7,7 @@ class Garagem {
         this.veiculos = {}; // Objeto para armazenar instâncias: { nomeInterno: Veiculo }
         this.localStorageKey = 'dadosGaragemCompleta_v6'; // Chave para localStorage
         this.carregarGaragem(); // Tenta carregar dados ao inicializar
+        this.carregarEExibirClima(); // Você pode passar uma cidade padrão aqui se quiser
     }
 
     // --- Persistência (LocalStorage) ---
@@ -715,5 +716,57 @@ class Garagem {
             detalhesBtn.disabled = false;
         }
     } // <-- Fecha o método async buscarDetalhesExtras
+     // --- Métodos para Clima ---
+
+    /**
+     * Busca os dados do clima e chama a função para exibi-los.
+     * @param {string} cidade - A cidade para a qual buscar o clima.
+     */
+    async carregarEExibirClima(cidade = "Campinas") { // Cidade padrão
+        console.log(`[Garagem] Solicitando dados do clima para ${cidade}...`);
+        const weatherDiv = document.getElementById('weather-info');
+        if (!weatherDiv) {
+            console.error("Elemento 'weather-info' não encontrado para exibir o clima.");
+            return;
+        }
+        
+        try {
+            // Verifica se a função fetchWeatherData existe (ou seja, se weatherService.js foi carregado)
+            if (typeof fetchWeatherData !== 'function') {
+                throw new Error("Função fetchWeatherData não está definida. Verifique se weatherService.js está carregado.");
+            }
+
+            const dadosClima = await fetchWeatherData(cidade);
+            this._exibirDadosClima(dadosClima);
+        } catch (error) {
+            console.error("[Garagem] Erro ao carregar ou exibir dados do clima:", error);
+            weatherDiv.innerHTML = `<span style="color: red;">Erro ao carregar clima: ${error.message}</span>`;
+        }
+    }
+
+    /**
+     * Exibe os dados do clima no elemento HTML apropriado.
+     * @param {object} dadosClima - O objeto de dados retornado pela API OpenWeatherMap.
+     */
+    _exibirDadosClima(dadosClima) {
+        const weatherDiv = document.getElementById('weather-info');
+        if (!weatherDiv) return; // Elemento não encontrado, já logado em carregarEExibirClima
+
+        if (dadosClima && dadosClima.cod === 200) { // Sucesso da API
+            const iconUrl = `https://openweathermap.org/img/wn/${dadosClima.weather[0].icon}@2x.png`;
+            weatherDiv.innerHTML = `
+                <strong>${dadosClima.name}:</strong> ${dadosClima.weather[0].description}
+                <img src="${iconUrl}" alt="${dadosClima.weather[0].description}" style="vertical-align: middle; width: 40px; height: 40px;">
+                <br>
+                Temperatura: <strong>${dadosClima.main.temp.toFixed(1)}°C</strong> (Sensação: ${dadosClima.main.feels_like.toFixed(1)}°C)
+                <br>
+                Umidade: ${dadosClima.main.humidity}% | Vento: ${(dadosClima.wind.speed * 3.6).toFixed(1)} km/h
+            `;
+        } else if (dadosClima && dadosClima.message) { // Erro conhecido da API ou do fetchWeatherData
+            weatherDiv.innerHTML = `<span style="color: red;">Clima não disponível: ${dadosClima.message}</span>`;
+        } else { // Erro genérico ou dados nulos
+             weatherDiv.innerHTML = `<span style="color: red;">Não foi possível obter informações do clima.</span>`;
+        }
+    }
 }
 // --- Fim do método buscarDetalhesExtras --- 
