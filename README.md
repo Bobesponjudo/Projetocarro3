@@ -124,10 +124,50 @@ Este recurso serve como um excelente exemplo de como preparar a aplicação para
     *   **Leia atentamente o aviso de segurança sobre a chave API no topo do arquivo `weatherService.js`.**
 5.  Abra o arquivo `index.html` em seu navegador de preferência.
     *   (Opcional) Se você tiver a extensão "Live Server" no VS Code, pode usá-la para servir o projeto.
+  
+      
+# Garagem Interativa com Previsão do Tempo Detalhada
 
-*(Restante do seu README, como Tecnologias Usadas, Estrutura do Projeto, Próximos Passos, etc.)*
+Este projeto é uma simulação de garagem interativa que permite gerenciar diferentes tipos de veículos (Carro, Carro Esportivo, Caminhão, Moto), suas manutenções, e também integra um serviço de informações climáticas com previsão detalhada.
 
----
+## Funcionalidades Implementadas Recentemente (Resumo do Dia)
+
+Hoje, focamos em aprimorar significativamente a seção de informações climáticas, adicionando:
+
+1.  **Previsão do Tempo Estendida:**
+    *   Os usuários agora podem visualizar a previsão do tempo para **1, 3 ou 5 dias futuros** para a cidade selecionada.
+    *   Botões dedicados permitem ao usuário escolher o período da previsão desejada.
+    *   A interface exibe a previsão em cards individuais para cada dia, mostrando:
+        *   Dia da semana e data.
+        *   Ícone representativo das condições climáticas.
+        *   Descrição textual do tempo (ex: "nublado", "chuva leve").
+        *   Temperaturas máxima e mínima previstas.
+
+2.  **Destaque Visual para Condições Climáticas Relevantes:**
+    *   **Risco de Chuva:** Dias com previsão de chuva são destacados visualmente e com um ícone (☔) e texto informativo para alertar o usuário.
+    *   **Temperaturas Extremas:**
+        *   **Calor Extremo:** Se a temperatura máxima prevista atingir ou ultrapassar um limite configurado (ex: 33°C), o card do dia recebe um fundo com **gradiente laranja** e um ícone (🔥) para indicar "Quente". As cores do texto são ajustadas para garantir legibilidade sobre o fundo laranja.
+        *   **Frio Extremo:** Se a temperatura mínima prevista atingir ou ficar abaixo de um limite configurado (ex: 7°C), o card do dia recebe um fundo com **gradiente azul** e um ícone (❄️) para indicar "Frio". As cores do texto também são ajustadas para contraste com o fundo azul.
+        *   **Temperaturas Normais:** Dias sem chuva e com temperaturas dentro da faixa normal mantêm um fundo com **gradiente verde**, com cores de texto otimizadas para este fundo.
+
+3.  **Integração com API OpenWeatherMap:**
+    *   Utiliza o endpoint `/data/2.5/forecast` da API OpenWeatherMap para buscar os dados da previsão de 5 dias (com dados a cada 3 horas).
+    *   Os dados brutos da API são processados no frontend para extrair uma previsão representativa para cada dia solicitado (1, 3 ou 5).
+
+4.  **Melhorias na Interface e Experiência do Usuário:**
+    *   Feedback visual de "carregando..." enquanto os dados da previsão são buscados.
+    *   Ajustes dinâmicos nas cores do texto dos cards de previsão para garantir boa legibilidade independentemente da cor de fundo (verde, laranja ou azul).
+    *   A cidade para a qual a previsão é exibida é a mesma utilizada para o clima atual, podendo ser alterada pelo usuário.
+
+5.  **Correção de Bugs e Refatoração:**
+    *   Resolução de erros de sintaxe e de referência (`Identifier has already been declared`, `Garagem is not defined`) que surgiram durante o desenvolvimento das novas funcionalidades, garantindo a correta execução do script.
+
+## Como Utilizar a Previsão do Tempo
+
+1.  Digite o nome da cidade desejada no campo de busca e clique em "Buscar Clima".
+2.  Abaixo da seção de "Clima Atual", você encontrará botões para selecionar a previsão para "1 Dia", "3 Dias" ou "5 Dias".
+3.  Clique no botão correspondente ao período desejado.
+4.  Os cards com a previsão detalhada para cada dia aparecerão, com os devidos destaques visuais para chuva ou temperaturas extremas.
 
 🚀 Tecnologias Utilizadas
 
