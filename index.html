@@ -26,6 +26,16 @@
             <div id="weather-info" style="padding: 10px; background-color: rgb(165, 223, 165); border-radius: 5px;">
                 Carregando informações do clima... (ou digite uma cidade acima)
             </div>
+            <div style="margin-top: 15px; margin-bottom: 10px;">
+                <label for="forecast-days" style="margin-right: 10px;"><strong>Previsão Detalhada:</strong></label>
+                <button class="forecast-days-btn" data-days="1" style="padding: 6px 10px; margin: 0 3px; background-color: #16792c; color: white; border: none; border-radius: 4px; cursor: pointer;">1 Dia</button>
+                <button class="forecast-days-btn" data-days="3" style="padding: 6px 10px; margin: 0 3px; background-color: #16792c; color: white; border: none; border-radius: 4px; cursor: pointer;">3 Dias</button>
+                <button class="forecast-days-btn" data-days="5" style="padding: 6px 10px; margin: 0 3px; background-color: #16792c; color: white; border: none; border-radius: 4px; cursor: pointer;">5 Dias</button>
+            </div>
+            <div id="forecast-info" style="margin-top: 10px; display: flex; flex-wrap: wrap; justify-content: space-around; background-color: #f0fff1; padding:10px; border-radius: 5px; min-height: 150px;">
+                <!-- A previsão para N dias será inserida aqui -->
+                Selecione o número de dias para ver a previsão.
+            </div>
         </section>
         <hr> <!-- FIM DA NOVA SEÇÃO PARA O CLIMA -->
         <!-- Seção Carro -->

@@ -82,34 +82,72 @@ window.onload = () => {
     // --- INÍCIO: Lógica para o seletor de cidade do clima ---
     const cityInput = document.getElementById('cityInput');
     const searchWeatherBtn = document.getElementById('searchWeatherBtn');
-    const weatherInfoDiv = document.getElementById('weather-info'); // Para exibir "carregando"
+    const weatherInfoDiv = document.getElementById('weather-info');
 
     if (searchWeatherBtn && cityInput && weatherInfoDiv) {
         searchWeatherBtn.addEventListener('click', () => {
             const cidade = cityInput.value.trim();
             if (cidade) {
-                weatherInfoDiv.innerHTML = `⏳ Carregando clima para ${cidade}...`; // Feedback visual
+                weatherInfoDiv.innerHTML = `⏳ Carregando clima para ${cidade}...`;
                 garagem.carregarEExibirClima(cidade);
-                // cityInput.value = ''; // Opcional: limpar o input após a busca
+                // Opcional: disparar previsão padrão para nova cidade
+                // garagem.carregarEExibirPrevisao(cidade, 3); // Ex: 3 dias
+                const forecastInfoDiv = document.getElementById('forecast-info');
+                if(forecastInfoDiv) forecastInfoDiv.innerHTML = `Selecione o número de dias para ver a previsão para ${cidade}.`;
+
             } else {
                 alert("Por favor, digite o nome de uma cidade.");
             }
         });
 
-        // Opcional: permitir busca ao pressionar Enter no input
         cityInput.addEventListener('keypress', (event) => {
             if (event.key === 'Enter') {
-                searchWeatherBtn.click(); // Simula o clique no botão
+                searchWeatherBtn.click();
             }
         });
+        // Carrega clima da cidade padrão no input (Campinas) ao iniciar
+        garagem.carregarEExibirClima(cityInput.value.trim() || "Campinas");
+
 
     } else {
-        console.warn("Elementos para busca de clima (cityInput ou searchWeatherBtn) não encontrados.");
+        console.warn("Elementos para busca de clima (cityInput, searchWeatherBtn ou weather-info) não encontrados.");
     }
     // --- FIM: Lógica para o seletor de cidade do clima ---
 
+    // --- INÍCIO: Lógica para botões de previsão de N dias ---
+    const forecastBtns = document.querySelectorAll('.forecast-days-btn');
+    const forecastInfoDiv = document.getElementById('forecast-info'); // Já declarado acima, mas ok redeclarar no escopo
 
-    // Verifica se a garagem foi carregada vazia (nenhum dado no localStorage)
+    if (forecastBtns.length > 0 && cityInput && forecastInfoDiv) {
+        forecastBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const cidade = cityInput.value.trim();
+                const numDias = parseInt(btn.getAttribute('data-days'), 10);
+
+                if (cidade && numDias) {
+                    forecastInfoDiv.innerHTML = `⏳ Carregando previsão de ${numDias} dia(s) para ${cidade}...`;
+                    garagem.carregarEExibirPrevisao(cidade, numDias);
+                } else if (!cidade) {
+                    alert("Por favor, digite o nome de uma cidade para ver a previsão.");
+                    cityInput.focus();
+                    forecastInfoDiv.innerHTML = `Digite uma cidade e selecione o número de dias para a previsão.`;
+                }
+            });
+        });
+        // Carregar uma previsão padrão (ex: 3 dias para a cidade no input) ao iniciar
+        // setTimeout para dar chance ao clima atual carregar primeiro e evitar sobrecarga inicial.
+        setTimeout(() => {
+             const cidadeInicial = cityInput.value.trim() || "Campinas";
+             if (cidadeInicial) { // Só carrega se houver cidade
+                 forecastInfoDiv.innerHTML = `⏳ Carregando previsão de 3 dia(s) para ${cidadeInicial}...`;
+                 garagem.carregarEExibirPrevisao(cidadeInicial, 3);
+             }
+        }, 1000);
+    } else {
+        console.warn("Elementos para botões de previsão (forecast-days-btn, cityInput ou forecast-info) não encontrados.");
+    }
+    // --- FIM: Lógica para botões de previsão de N dias ---
+
     if (Object.keys(garagem.veiculos).length === 0) {
         console.log("Garagem vazia. Criando veículos padrão...");
         garagem.criarCarro();

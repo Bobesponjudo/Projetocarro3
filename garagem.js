@@ -664,8 +664,8 @@ class Garagem {
 
     } // <-- Fecha o método verificarAgendamentosProximos (DEVE HAVER APENAS UMA AQUI)
 
-// } // <-- Fecha a classe Garagem (mais abaixo no arquivo)
- // --- Dentro da classe Garagem em garagem.js ---
+    // } // <-- Fecha a classe Garagem (mais abaixo no arquivo)
+    // --- Dentro da classe Garagem em garagem.js ---
 
     /**
      * Busca detalhes extras de um veículo usando a API simulada e atualiza a UI.
@@ -699,7 +699,7 @@ class Garagem {
             console.log(`[Garagem] Detalhes recebidos para ${nomeVeiculo}:`, detalhes);
 
             // ... (resto da formatação e exibição dos detalhes HTML) ...
-             let detalhesHtml = `<strong>Detalhes Adicionais (${veiculo.modelo ?? 'Veículo'}):</strong><ul style="margin-top: 5px; padding-left: 20px; list-style: disc;">`;
+            let detalhesHtml = `<strong>Detalhes Adicionais (${veiculo.modelo ?? 'Veículo'}):</strong><ul style="margin-top: 5px; padding-left: 20px; list-style: disc;">`;
             detalhesHtml += `<li>Ano: ${detalhes.ano ?? 'N/D'}</li>`;
             detalhesHtml += `<li>Motor: ${detalhes.motor ?? 'N/D'}</li>`;
             // ... (etc.) ...
@@ -708,15 +708,15 @@ class Garagem {
 
         } catch (error) {
             // ... (tratamento de erro como antes) ...
-             console.error(`[Garagem] Erro ao buscar/processar detalhes extras para ${nomeVeiculo}:`, error);
-             detalhesDiv.innerHTML = `<span style="color: red; font-weight: bold;">Falha ao carregar detalhes:</span><br><span style="color: red;">${error.message || 'Erro desconhecido na API.'}</span>`;
+            console.error(`[Garagem] Erro ao buscar/processar detalhes extras para ${nomeVeiculo}:`, error);
+            detalhesDiv.innerHTML = `<span style="color: red; font-weight: bold;">Falha ao carregar detalhes:</span><br><span style="color: red;">${error.message || 'Erro desconhecido na API.'}</span>`;
         } finally {
             // ... (reabilitar botão como antes) ...
-             console.log(`[Garagem] Finalizando busca de detalhes para ${nomeVeiculo}. Reabilitando botão.`);
+            console.log(`[Garagem] Finalizando busca de detalhes para ${nomeVeiculo}. Reabilitando botão.`);
             detalhesBtn.disabled = false;
         }
     } // <-- Fecha o método async buscarDetalhesExtras
-     // --- Métodos para Clima ---
+    // --- Métodos para Clima ---
 
     /**
      * Busca os dados do clima e chama a função para exibi-los.
@@ -729,9 +729,8 @@ class Garagem {
             console.error("Elemento 'weather-info' não encontrado para exibir o clima.");
             return;
         }
-        
+
         try {
-            // Verifica se a função fetchWeatherData existe (ou seja, se weatherService.js foi carregado)
             if (typeof fetchWeatherData !== 'function') {
                 throw new Error("Função fetchWeatherData não está definida. Verifique se weatherService.js está carregado.");
             }
@@ -750,9 +749,9 @@ class Garagem {
      */
     _exibirDadosClima(dadosClima) {
         const weatherDiv = document.getElementById('weather-info');
-        if (!weatherDiv) return; // Elemento não encontrado, já logado em carregarEExibirClima
+        if (!weatherDiv) return;
 
-        if (dadosClima && dadosClima.cod === 200) { // Sucesso da API
+        if (dadosClima && dadosClima.cod === 200) {
             const iconUrl = `https://openweathermap.org/img/wn/${dadosClima.weather[0].icon}@2x.png`;
             weatherDiv.innerHTML = `
                 <strong>${dadosClima.name}:</strong> ${dadosClima.weather[0].description}
@@ -762,11 +761,172 @@ class Garagem {
                 <br>
                 Umidade: ${dadosClima.main.humidity}% | Vento: ${(dadosClima.wind.speed * 3.6).toFixed(1)} km/h
             `;
-        } else if (dadosClima && dadosClima.message) { // Erro conhecido da API ou do fetchWeatherData
-            weatherDiv.innerHTML = `<span style="color: red;">Clima não disponível: ${dadosClima.message}</span>`;
-        } else { // Erro genérico ou dados nulos
-             weatherDiv.innerHTML = `<span style="color: red;">Não foi possível obter informações do clima.</span>`;
+        } else if (dadosClima && dadosClima.message) {
+            // Se a mensagem for sobre a chave API, já foi tratada em fetchWeatherData para mostrar no weather-info
+            // Aqui, só precisamos garantir que não sobrescreva se a mensagem já estiver lá.
+            if (!weatherDiv.innerHTML.includes("AVISO:")) {
+                weatherDiv.innerHTML = `<span style="color: red;">Clima não disponível: ${dadosClima.message}</span>`;
+            }
+        } else {
+            weatherDiv.innerHTML = `<span style="color: red;">Não foi possível obter informações do clima.</span>`;
         }
     }
+
+    // --- Métodos para Previsão do Tempo (Forecast) ---
+
+    /**
+     * Busca os dados da previsão do tempo para N dias e chama a função para exibi-los.
+     * @param {string} cidade - A cidade para a qual buscar a previsão.
+     * @param {number} numDias - Número de dias da previsão (1, 3 ou 5).
+     */
+    async carregarEExibirPrevisao(cidade = "Campinas", numDias = 3) {
+        console.log(`[Garagem] Solicitando dados da previsão para ${cidade} (${numDias} dias)...`);
+        const forecastDiv = document.getElementById('forecast-info');
+        if (!forecastDiv) {
+            console.error("Elemento 'forecast-info' não encontrado para exibir a previsão.");
+            return;
+        }
+        // Feedback visual já é tratado em script.js antes de chamar esta função.
+        // forecastDiv.innerHTML = `⏳ Carregando previsão para ${numDias} dia(s) em ${cidade}...`; 
+
+        try {
+            if (typeof fetchForecastData !== 'function') {
+                throw new Error("Função fetchForecastData não está definida. Verifique se weatherService.js está carregado.");
+            }
+
+            const dadosPrevisao = await fetchForecastData(cidade, numDias);
+            this._exibirDadosPrevisao(dadosPrevisao, numDias);
+        } catch (error) {
+            console.error("[Garagem] Erro ao carregar ou exibir dados da previsão:", error);
+            forecastDiv.innerHTML = `<span style="color: red;">Erro ao carregar previsão: ${error.message}</span>`;
+        }
+    }
+
+    /**
+     * Exibe os dados da previsão do tempo no elemento HTML apropriado, com destaques.
+     * @param {object} dadosPrevisao - O objeto de dados retornado e processado pela fetchForecastData.
+     * @param {number} numDias - Número de dias da previsão exibida.
+     */
+    _exibirDadosPrevisao(dadosPrevisao, numDias) {
+        const forecastDiv = document.getElementById('forecast-info');
+        if (!forecastDiv) return;
+
+        if (dadosPrevisao && dadosPrevisao.cod === 200 && dadosPrevisao.list) {
+            forecastDiv.innerHTML = ''; 
+
+            if (dadosPrevisao.list.length === 0) {
+                forecastDiv.innerHTML = `<p>Nenhuma previsão disponível para ${dadosPrevisao.city.name} para os próximos ${numDias} dias.</p>`;
+                return;
+            }
+            
+            const tituloPrevisao = document.createElement('h3');
+            tituloPrevisao.textContent = `Previsão para ${dadosPrevisao.city.name} nos próximos ${numDias} dia${numDias > 1 ? 's' : ''}`;
+            tituloPrevisao.style.width = '100%';
+            tituloPrevisao.style.textAlign = 'center';
+            tituloPrevisao.style.marginBottom = '10px';
+            forecastDiv.appendChild(tituloPrevisao);
+
+            dadosPrevisao.list.forEach(item => {
+                const card = document.createElement('div');
+                card.style.border = "1px solid #072f13"; 
+                card.style.borderRadius = "8px";
+                card.style.padding = "10px";
+                card.style.margin = "5px";
+                card.style.flexBasis = numDias === 1 ? "calc(80% - 10px)" : (numDias === 3 ? "calc(33.33% - 10px)" : "calc(20% - 10px)");
+                card.style.minWidth = "140px";
+                card.style.textAlign = "center";
+                card.style.boxSizing = "border-box";
+                
+                card.style.background = "linear-gradient(to bottom, #1a6a32, #0b441b)"; 
+                card.style.boxShadow = "0 2px 4px rgba(0,0,0,0.2)";
+                
+                let textColor = "#f0f0f0"; 
+                let headingColor = "#ffffff";
+                let descriptionColor = "#e0e0e0";
+                let strongTempColor = "#ffffff";
+
+                const dateObj = new Date(item.dt_txt);
+                const diaSemana = dateObj.toLocaleDateString('pt-BR', { weekday: 'short' });
+                const dataFormatada = dateObj.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+                
+                const iconUrl = `https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`;
+                const descricao = item.weather[0].description;
+                const tempMax = item.main.temp_max.toFixed(0);
+                const tempMin = item.main.temp_min.toFixed(0);
+
+                // Declaração ÚNICA de condicaoClima e idClima
+                const condicaoClima = item.weather[0].main.toLowerCase();
+                const idClima = item.weather[0].id;
+
+                const LIMITE_QUENTE = 33;
+                const LIMITE_FRIO = 7;  
+                let isExtremeHot = parseFloat(tempMax) >= LIMITE_QUENTE;
+                let isExtremeCold = parseFloat(tempMin) <= LIMITE_FRIO;
+                let extremeTempMsg = '';
+
+                if (isExtremeHot) {
+                    card.style.background = "linear-gradient(to bottom, #ffaf7b, #ff7e5f)"; 
+                    textColor = "#402b20"; 
+                    headingColor = "#5c3d2e"; 
+                    descriptionColor = "#4a3025";
+                    strongTempColor = "#5c3d2e";
+                    card.style.border = "1px solid #e65c00";
+                    extremeTempMsg += '🔥 Quente ';
+                }
+                
+                if (isExtremeCold) {
+                    card.style.background = "linear-gradient(to bottom, #75baff, #3a8dff)"; 
+                    textColor = "#00224d"; 
+                    headingColor = "#001a3b"; 
+                    descriptionColor = "#00295e";
+                    strongTempColor = "#001a3b";
+                    card.style.border = "1px solid #0056b3";
+                    extremeTempMsg += '❄️ Frio'; 
+                }
+                card.style.color = textColor;
+
+                card.innerHTML = `
+                    <h4 style="margin-top:0; margin-bottom: 5px; color: ${headingColor};">${diaSemana.replace('.', '')}, ${dataFormatada}</h4>
+                    <img src="${iconUrl}" alt="${descricao}" style="width: 60px; height: 60px; margin-bottom: -10px; background-color: rgba(255,255,255,0.1); border-radius: 50%;">
+                    <p style="text-transform: capitalize; margin-bottom: 5px; font-size: 0.9em; color: ${descriptionColor};">${descricao}</p>
+                    <p style="margin-bottom: 2px; font-size: 0.9em;">Max: <strong style="font-size: 1.1em; color: ${strongTempColor};">${tempMax}°C</strong></p>
+                    <p style="margin-bottom: 5px; font-size: 0.9em;">Min: <strong style="font-size: 1.1em; color: ${strongTempColor};">${tempMin}°C</strong></p>
+                `;
+                
+                // Usa as variáveis condicaoClima e idClima já declaradas
+                if (condicaoClima.includes('rain') || condicaoClima.includes('chuva') || 
+                    (idClima >= 200 && idClima < 600) ) {
+                    
+                    let rainTextColor = "#add8e6"; 
+                    if(isExtremeHot) { 
+                        rainTextColor = "#007bff"; 
+                    } else if (isExtremeCold) { 
+                        rainTextColor = "#e6f7ff"; 
+                    }
+                    card.innerHTML += `<p style="color: ${rainTextColor}; font-weight: bold; font-size: 0.9em;">☔ Risco de Chuva</p>`;
+                }
+
+                if (extremeTempMsg) {
+                    let extremeMsgColor = "#ffd700"; 
+                    if(isExtremeHot) {
+                        extremeMsgColor = "#8B4513"; 
+                    } else if (isExtremeCold) {
+                        extremeMsgColor = "#FFFFE0"; 
+                    }
+                    card.innerHTML += `<p style="color: ${extremeMsgColor}; font-weight: bold; font-size: 0.9em; text-shadow: 0 0 2px rgba(0,0,0,0.3);">${extremeTempMsg.trim()}</p>`;
+                }
+                forecastDiv.appendChild(card);
+            });
+
+        } else if (dadosPrevisao && dadosPrevisao.message) {
+            if (!forecastDiv.innerHTML.includes("AVISO:")) {
+                // Correção aqui também: dadosPrevisao.message, não dadosPreivado
+                forecastDiv.innerHTML = `<span style="color: red;">Previsão não disponível: ${dadosPrevisao.message}</span>`;
+            }
+        } else {
+            forecastDiv.innerHTML = `<span style="color: red;">Não foi possível obter a previsão do tempo. Tente novamente.</span>`;
+        }
+    }
+
 }
 // --- Fim do método buscarDetalhesExtras --- 

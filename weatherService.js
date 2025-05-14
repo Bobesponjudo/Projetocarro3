@@ -74,5 +74,65 @@ async function fetchWeatherData(cidade = "Campinas") {
         };
     }
 }
+/**
+ * Busca dados da previsão do tempo para vários dias.
+ * @param {string} cidade - O nome da cidade.
+ * @param {number} numDays - Número de dias para a previsão (1, 3 ou 5).
+ * @returns {Promise<object|null>} Uma promessa que resolve com os dados da previsão processados ou um objeto de erro.
+ */
+async function fetchForecastData(cidade = "Campinas", numDays = 3) {
+    if (OPENWEATHER_API_KEY === "bdc0143hbvrgeklmeber" || !OPENWEATHER_API_KEY) {
+        const errorMessage = "Chave da API OpenWeatherMap não configurada ou inválida em weatherService.js. Por favor, adicione sua chave válida.";
+        console.warn(errorMessage);
+        // Não precisa atualizar a UI diretamente aqui, o chamador (Garagem) fará isso.
+        return { cod: 401, message: errorMessage };
+    }
+
+    const url = `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(cidade)}&appid=${OPENWEATHER_API_KEY}&units=metric&lang=pt_br`;
+    console.log(`[WeatherService] Chamando API OpenWeatherMap (forecast): ${url.replace(OPENWEATHER_API_KEY, "CHAVE_OCULTA_NO_LOG")}`);
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (!response.ok) {
+            console.error(`[WeatherService] Erro da API OpenWeatherMap Forecast (${response.status} - ${data.cod || 'N/A'}):`, data.message || response.statusText);
+            return {
+                cod: parseInt(data.cod) || response.status,
+                message: data.message || `Não foi possível obter a previsão para ${cidade}. Código: ${response.status}`
+            };
+        }
+
+        // Processar os dados para extrair uma previsão por dia, até numDays
+        const dailyForecasts = [];
+        const processedDates = new Set();
+
+        for (const item of data.list) {
+            const forecastDate = item.dt_txt.substring(0, 10); // Extrai YYYY-MM-DD
+            // Pega o primeiro registro de cada dia novo, até o limite de numDays
+            if (!processedDates.has(forecastDate) && dailyForecasts.length < numDays) {
+                processedDates.add(forecastDate);
+                dailyForecasts.push(item);
+            }
+            if (dailyForecasts.length >= numDays) {
+                break; // Já temos dias suficientes
+            }
+        }
+        
+        console.log(`[WeatherService] Dados da previsão processados para ${cidade} (${numDays} dias):`, dailyForecasts);
+        return {
+            cod: 200, // Sucesso
+            city: data.city, // Informações da cidade
+            list: dailyForecasts // Lista de previsões diárias processadas
+        };
+
+    } catch (error) {
+        console.error("[WeatherService] Erro na requisição fetch para OpenWeatherMap Forecast:", error);
+        return {
+            cod: 0,
+            message: "Falha na comunicação com a API de previsão do clima."
+        };
+    }
+}
 
 // --- END OF FILE weatherService.js ---
